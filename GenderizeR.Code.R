@@ -7,7 +7,7 @@ Master$Name = as.character(Master$Name)
 
 
 Name <- c(Master$Name) #Create a new sheet
-unique(Name) #Get rid of multiples
+Name <- unique(Name) #Get rid of multiples
 
 Gender <- c(findGivenNames(Name))
 
