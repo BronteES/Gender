@@ -8,7 +8,10 @@ if (!require(plyr)){
  install.packages("plyr")
  library(plyr)
 }
-
+if (!require(purrr)){
+ install.packages("purrr")
+ library(purrr)
+}
 
 Master = read.csv("Master.csv") #Imports with 9 NA columns
 Master[,18:27] = NULL #Delete NA columns
@@ -54,10 +57,22 @@ prop.y2013 = prop.table(table(y2013$Gender))
 prop.y2015 = prop.table(table(y2015$Gender))
 prop.y2017 = prop.table(table(y2017$Gender))
 
+#Trying to combine the data frames for the proportion of males and females, while retaining all data. None working as I had hoped.
+#prop.y = Reduce(function(x, y) merge(x, y, by = Year, all=TRUE), list(prop.y2007, prop.y2011, prop.y2013, prop.y2015, prop.y2017)) #Not working, says 'by' must specify a uniquely valid column 
+prop.y.list = list(prop.y2007, prop.y2011, prop.y2013, prop.y2015, prop.y2017)
+#Reduce(function(x, y) merge(x, y, all=TRUE), prop.y.list, accumulate=FALSE) #Does the same as the above code
+#prop.y = unsplit(prop.y.list,"Year", drop = FALSE)
+
 #Put results for female proportion into graph
 
 
-#Not needed
+
+
+
+
+
+
+#Not needed. The number of females each year
 femaleyear = split(female, female$Year) #split female data by year
 f2007 = femaleyear[[1]]
 f2011 = femaleyear[[2]]
@@ -65,5 +80,8 @@ f2013 = femaleyear[[3]]
 f2015 = femaleyear[[4]]
 f2017 = femaleyear[[5]]
 count(f2007$Gender) #233
-
-f2007 = mean (female)
+count(f2011$Gender) #203
+count(f2013$Gender) #332
+count(f2015$Gender) #152
+count(f2017$Gender) #311
+#Doesn't say much as the overall participant numbers fluctuate too.
