@@ -51,17 +51,19 @@ y2013 = Years [[3]]
 y2015 = Years [[4]]
 y2017 = Years [[5]]
 
-prop.y2007 = prop.table(table(y2007$Gender)) #Proportion of males and females in 2007
-prop.y2011 = prop.table(table(y2011$Gender))
-prop.y2013 = prop.table(table(y2013$Gender))
-prop.y2015 = prop.table(table(y2015$Gender))
-prop.y2017 = prop.table(table(y2017$Gender))
+prop.y2007 = as.data.frame(prop.table(table(y2007$Gender))) #Proportion of males and females in 2007
+prop.y2011 = as.data.frame(prop.table(table(y2011$Gender)))
+prop.y2013 = as.data.frame(prop.table(table(y2013$Gender)))
+prop.y2015 = as.data.frame(prop.table(table(y2015$Gender)))
+prop.y2017 = as.data.frame(prop.table(table(y2017$Gender)))
 
 #Trying to combine the data frames for the proportion of males and females, while retaining all data. None working as I had hoped.
 #prop.y = Reduce(function(x, y) merge(x, y, by = Year, all=TRUE), list(prop.y2007, prop.y2011, prop.y2013, prop.y2015, prop.y2017)) #Not working, says 'by' must specify a uniquely valid column 
 prop.y.list = list(prop.y2007, prop.y2011, prop.y2013, prop.y2015, prop.y2017)
 #Reduce(function(x, y) merge(x, y, all=TRUE), prop.y.list, accumulate=FALSE) #Does the same as the above code
 #prop.y = unsplit(prop.y.list,"Year", drop = FALSE)
+#prop.y = join_all (prop.y.list, by = NULL, type = "left", match = "first") #Doesn't work either
+
 
 #Put results for female proportion into graph
 
