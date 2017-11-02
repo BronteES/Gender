@@ -64,7 +64,7 @@ prop1 = merge(prop.y2007, prop.y2011, all = TRUE) #taking only matching data fro
 #prop.y = Reduce(function(x, y) merge(x, y, by = Year, all=TRUE), list(prop.y2007, prop.y2011, prop.y2013, prop.y2015, prop.y2017)) #Not working, says 'by' must specify a uniquely valid column 
 #prop.y.list = list(prop.y2007, prop.y2011, prop.y2013, prop.y2015, prop.y2017)
 #Reduce(function(x, y) merge(x, y, all=TRUE), prop.y.list, accumulate=FALSE) #Does the same as the above code
-#prop.y = unsplit(prop.y.list,"Year", drop = FALSE)
+#prop.y = unsplit(prop.y.list,"Year", drop = FALSE) #Error: unused argument ("Year")
 #prop.y = join_all (prop.y.list, by = NULL, type = "left", match = "first") #Doesn't work either
 
 
