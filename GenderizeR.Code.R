@@ -28,6 +28,7 @@ gdf$Name = as.character(gdf$Name) #Change names into characters
 #Merge the Master data with the gdf data with a left join to avoid multiples of rows
 NameGender = merge(x = Master, y = gdf, by = "Name", all.x = TRUE, all.y = TRUE)
 NameGender$Probability = as.numeric(as.character(NameGender$Probability)) #Changes probabilities to numeric
+NameGender$Year = as.numeric(as.character((NameGender$Year)))
 
 #Visualise the distribution of probabilities of names (where 1 means the function is 100% sure its name-gender estimate is correct, and 0 means it is 0% sure)
 hist(NameGender$Probability)
@@ -39,7 +40,7 @@ male$invProbability = NA #New column
 male$invProbability = 1-male$Probability #invProbability = inverse probability of male name beign correct; inverts the probability of male name-gender
 
 #To run analysis, we need to unsplit the data: combine the male and female probabilities into one column with the corresponding year for each data point
-rbind(female$Probability, male$invProbability) #Doesn't work; need to combine year and probability for both male and female dataframes
+#rbind(female$Probability, male$invProbability) #Doesn't work; need to combine year and probability for both male and female dataframes
 
 scatter.smooth(female$Year, female$Probability) #Scatter plot of female name-gender probability
 scatter.smooth(male$Year, male$invProbability) #Scatter plot of male name-gender probability
@@ -58,7 +59,7 @@ prop.y2015 = as.data.frame(prop.table(table(y2015$Gender)))
 prop.y2017 = as.data.frame(prop.table(table(y2017$Gender)))
 
 #Combinging the prop.y data frames one at a time
-prop1 = merge(prop.y2007, prop.y2011, all = TRUE) #taking only matching data from the two data frames
+prop1 = merge(x = prop.y2007, y = prop.y2011, by.x = "Year", by.y ="Year", all = TRUE) #taking only matching data from the two data frames
 
 #Trying to combine the data frames for the proportion of males and females, while retaining all data. None working as I had hoped.
 #prop.y = Reduce(function(x, y) merge(x, y, by = Year, all=TRUE), list(prop.y2007, prop.y2011, prop.y2013, prop.y2015, prop.y2017)) #Not working, says 'by' must specify a uniquely valid column 
