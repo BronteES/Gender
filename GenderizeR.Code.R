@@ -21,7 +21,7 @@ Master$Name = as.character(Master$Name)
 Name = c(Master$Name) #Create a new sheet
 Name = unique(Name) #Get rid of multiples
 
-Gender = c(findGivenNames(Name)) #As we have over 1000 names, we have to run this function over two days or pay
+Gender = c(findGivenNames(Name)) #As we have over 1000 names, we have to run this function over two days or pay. Will need to loop for 1-1000, 1001-2000, 2001-3000
 gdf = data.frame(Name = toupper(Gender$name), Gender = Gender$gender, Probability = Gender$probability) #gdf = data.frame(Gender) #gdf means gender data frame; toupper changes names to upper case
 gdf$Name = as.character(gdf$Name) #Change names into characters
 
@@ -35,17 +35,21 @@ hist(NameGender$Probability)
 
 sdf = split(NameGender, NameGender$Gender) #sdf means split (NameGender) data frame !check if it has been split into two columns!
 female = sdf[[1]] #creates a data frame using only the female data
+female$prob.female = female$Probability
 male = sdf [[2]] #creates a data frame using on the male data
-male$invProbability = NA #New column
-male$invProbability = 1-male$Probability #invProbability = inverse probability of male name beign correct; inverts the probability of male name-gender
+male$prob.female = NA #New column
+male$prob.female = 1-male$Probability #invProbability = inverse probability of male name beign correct; inverts the probability of male name-gender
+male.hist = hist(male$prob.female) #histogram of probability male
+female.hist = hist(female$prob.female) #histogram of probability female
 
-#To run analysis, we need to unsplit the data: combine the male and female probabilities into one column with the corresponding year for each data point
-#rbind(female$Probability, male$invProbability) #Doesn't work; need to combine year and probability for both male and female dataframes
+PrF = rbind(male, female)
+PrF.hist = hist(PrF$prob.female) #histogram of Probability female
+View(PrF.hist)
 
 scatter.smooth(female$Year, female$Probability) #Scatter plot of female name-gender probability
 scatter.smooth(male$Year, male$invProbability) #Scatter plot of male name-gender probability
 
-Years = split(NameGender, NameGender$Year)
+Years = split(PrF, PrF$Year)
 y2007 = Years [[1]]
 y2011 = Years [[2]]
 y2013 = Years [[3]]
@@ -53,23 +57,38 @@ y2015 = Years [[4]]
 y2017 = Years [[5]]
 
 prop.y2007 = as.data.frame(prop.table(table(y2007$Gender))) #Proportion of males and females in 2007
+prop.y2007$Year = c(2007,2007)
 prop.y2011 = as.data.frame(prop.table(table(y2011$Gender)))
+prop.y2011$Year = c(2011,2011)
 prop.y2013 = as.data.frame(prop.table(table(y2013$Gender)))
+prop.y2013$Year = c(2013,2013)
 prop.y2015 = as.data.frame(prop.table(table(y2015$Gender)))
+prop.y2015$Year = c(2015,2015)
 prop.y2017 = as.data.frame(prop.table(table(y2017$Gender)))
+prop.y2017$Year = c(2017,2017)
 
-#Combinging the prop.y data frames one at a time
-prop1 = merge(x = prop.y2007, y = prop.y2011, by.x = "Year", by.y ="Year", all = TRUE) #taking only matching data from the two data frames
+prop = rbind(prop.y2007, prop.y2011, prop.y2013, prop.y2015, prop.y2017)
+View(prop)
 
-#Trying to combine the data frames for the proportion of males and females, while retaining all data. None working as I had hoped.
-#prop.y = Reduce(function(x, y) merge(x, y, by = Year, all=TRUE), list(prop.y2007, prop.y2011, prop.y2013, prop.y2015, prop.y2017)) #Not working, says 'by' must specify a uniquely valid column 
-#prop.y.list = list(prop.y2007, prop.y2011, prop.y2013, prop.y2015, prop.y2017)
-#Reduce(function(x, y) merge(x, y, all=TRUE), prop.y.list, accumulate=FALSE) #Does the same as the above code
-#prop.y = unsplit(prop.y.list,"Year", drop = FALSE) #Error: unused argument ("Year")
-#prop.y = join_all (prop.y.list, by = NULL, type = "left", match = "first") #Doesn't work either
+PrF.2007.hist = hist(y2007$prob.female)
+PrF.2011.hist = hist(y2011$prob.female)
+PrF.2013.hist = hist(y2013$prob.female)
+PrF.2015.hist = hist(y2015$prob.female)
+PrF.2017.hist = hist(y2017$prob.female)
+
+#Trying out Violin Plots
+#Making a data set with Year and Prob.female
+VYear = PrF$Year
+VProb = as.character(PrF$prob.female)
+V = as.data.frame(VYear, VProb, row.names = NULL, optional = FALSE)
+
+subset = PrF[PrF$Year,PrF$prob.female] #Don't think this is right
+ggplot(PrF$Year, PrF$prob.female)
 
 
-#Put results for female proportion into graph
++ geom_line()+geom_violin(aes(group=year),alpha=0.5)
+
+
 
 
 
